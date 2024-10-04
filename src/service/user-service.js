@@ -77,6 +77,22 @@ class UserService {
     const user = await this.userRepository.findUserById(userId);
     return user !== null; 
   }
+  async getAllUsers() {
+    try {
+      const users = await this.userRepository.getAllUsers();
+      return users;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async findUserByUsername(username){
+    try {
+      const user = await this.userRepository.findUserByUsername(username);
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = UserService;

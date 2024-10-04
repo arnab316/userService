@@ -72,8 +72,38 @@ const login = async(req, res) => {
     }
 
 }
+const getAllUsers = async(req, res) => {
+    try {
+        const users = await userService.getAllUsers();
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'Users fetched successfully',
+            data: users,
+        });
+    } catch (error) {
+        handleError(res, error)
+    }
+    
+}
+const  findUserByUsername= async(req, res)=>{
+    try {
+      const user = await userService.findUserByUsername(req.params.username);
+      
+      return res.status(StatusCodes.OK).json({
+          success: true,
+          message: 'Username fetched successfully',
+          data: user,
+      });
+        
+    } catch (error) {
+        handleError(error);
+        // console.log(error.message);
+    }
+}
 module.exports = {
     registerUser,
     deleteUser,
-    login
+    login,
+    getAllUsers,
+    findUserByUsername
 }
