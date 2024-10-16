@@ -1,5 +1,7 @@
 const {StatusCodes} = require('http-status-codes')
 const {UserService} = require('../service');
+const {logMessage} = require('../utils/log-service');
+
 const userService = new UserService();
 const handleError = (res, error) => {
     const statusCode = error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR; 
@@ -25,6 +27,7 @@ const registerUser = async(req, res)=>{
   try {
     const { fullName, username, password } = req.body;
     const newUser = await userService.registerUser({ fullName, username, password });
+    await logMessage('UserService', 'info', `successfully register a for user ${newUser.username}`);        
 
     res.status(StatusCodes.CREATED).json({
         success: true,
@@ -62,6 +65,8 @@ const login = async(req, res) => {
     try {
         const { username, password } = req.body;
         const auth = await userService.login(username, password);
+        await logMessage('UserService', 'info', `log in successfully a for user ${auth.data.userId}`);
+
         return res.status(StatusCodes.OK).json({
             success: true,
             message: 'Login successful',
