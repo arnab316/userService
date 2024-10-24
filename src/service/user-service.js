@@ -1,8 +1,8 @@
-const axiosInstance = require('../config/axiosConfig')
 const axios = require('axios');
 const {UserRepository} = require('../repositories');
-
-
+const { InvalidPasswordError, UserNotFoundError } = require('../utils/custom-errors')
+const AppError = require('../utils/error-handler');
+const { StatusCodes } = require('http-status-codes');
 class UserService {
   constructor() {
     this.userRepository = new UserRepository();
@@ -47,8 +47,7 @@ class UserService {
     try {
       const user = await this.userRepository.findUserByField('username', username)
       if (!user) {
-        throw new Error('User not found');
-
+        throw new UserNotFoundError(); 
     }
     const userId = user.userId;
       const authServiceUrl = 'http://localhost:4000/api/v1/login';
@@ -59,8 +58,19 @@ class UserService {
       const response = await axios.post(authServiceUrl, authData);
       return response.data;
     } catch (error) {
-      console.log(error);
-      throw error;
+      const { status, data } = error.response;
+      if (error.response && error.response.status === 401) {
+        throw new InvalidPasswordError(); 
+    } else if (status === 500 && data.message === 'Invalid password') {
+      throw new InvalidPasswordError();
+    }else {
+      throw new AppError('UnexpectedError', 
+        'An unexpected error occurred.',
+         error.message,
+         StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+      // console.log(error);
+    
     }
   }
 

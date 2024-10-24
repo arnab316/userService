@@ -27,7 +27,7 @@ const registerUser = async(req, res)=>{
   try {
     const { fullName, username, password } = req.body;
     const newUser = await userService.registerUser({ fullName, username, password });
-    await logMessage('UserService', 'info', `successfully register a for user ${newUser.username}`);        
+    await logMessage('UserService', 'info', `successfully register a for user ${newUser.userz.username}`);        
 
     res.status(StatusCodes.CREATED).json({
         success: true,
