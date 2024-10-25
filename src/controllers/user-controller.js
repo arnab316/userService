@@ -27,7 +27,7 @@ const registerUser = async(req, res)=>{
   try {
     const { fullName, username, password } = req.body;
     const newUser = await userService.registerUser({ fullName, username, password });
-    await logMessage('UserService', 'info', `successfully register a for user ${newUser.userz.username}`);        
+    await logMessage('UserService', 'info', `successfully register a for user: ${username}`);        
 
     res.status(StatusCodes.CREATED).json({
         success: true,
@@ -35,7 +35,9 @@ const registerUser = async(req, res)=>{
         data: newUser,
     });
   } catch (error) {
-    handleError(res, error)
+    await logMessage('UserService', 'error', `failed to register a for user ${error.message}`);
+    // handleError(res, error)
+    console.log(error);
   }
 }
 

@@ -3,11 +3,14 @@ const {UserRepository} = require('../repositories');
 const { InvalidPasswordError, UserNotFoundError } = require('../utils/custom-errors')
 const AppError = require('../utils/error-handler');
 const { StatusCodes } = require('http-status-codes');
+const ValidationError = require('../utils/validation-error');
+const {UniqueConstraintError} = require('sequelize');
 class UserService {
   constructor() {
     this.userRepository = new UserRepository();
   }
   async registerUser(data){
+    console.log('Data received in service layer:', data);
   try {
 
     //* Create the user in the UserRepository
@@ -27,18 +30,20 @@ class UserService {
     };
     const response = await axios.post(authServiceUrl, authData);
 
-
      // Extract auth details from AuthService response
-     const { authId, passwordhash } = response.data;
-
+    //  const { authId, passwordhash } = response.data;
+     const { id: authId, passwordhash } = response.data.data
      return {
       user: newUser, // From UserService
       authId: authId, // From AuthService
       passwordhash: passwordhash, // Hashed password from AuthService
     };
-  } catch (error) {
-    console.log(error)
-    throw error;
+  } catch(error){
+    if (error instanceof UniqueConstraintError) {
+      throw new ValidationError(error);
+    }
+
+    throw new AppError('Unable to create user', 'UserCreationError', StatusCodes.INTERNAL_SERVER_ERROR);
   }
 
   }
