@@ -7,6 +7,7 @@ router.post('/login', userController.login);
 router.delete('/users/:userId', userController.deleteUser);
 router.get('/users', userController.getAllUsers);
 router.get('/user/:username', userController.findUserByUsername);
+// router.get('/user/:userId', userController.getUserById);
 router.get('/test', (req, res) => {
     res.json({ message: 'User API is working!' });
   });

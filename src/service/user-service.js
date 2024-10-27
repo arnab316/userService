@@ -105,7 +105,19 @@ class UserService {
       const user = await this.userRepository.findUserByUsername(username);
       return user;
     } catch (error) {
-      throw error;
+      throw error
+    }
+  }
+  async getUserById(userId){
+    try {
+      console.log('service layer :'+ userId);
+      const user = await this.userRepository.findUserById(userId);
+      return user;
+    } catch (error) {
+      throw new  AppError('UnexpectedError', 
+        'An unexpected error occurred.',
+         error.message,
+         StatusCodes.INTERNAL_SERVER_ERROR);
     }
   }
 }

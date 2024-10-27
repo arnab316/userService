@@ -107,10 +107,12 @@ const  findUserByUsername= async(req, res)=>{
         // console.log(error.message);
     }
 }
+
+
 module.exports = {
     registerUser,
     deleteUser,
     login,
     getAllUsers,
-    findUserByUsername
+    findUserByUsername,
 }
